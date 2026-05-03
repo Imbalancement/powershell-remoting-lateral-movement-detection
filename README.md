@@ -133,25 +133,18 @@ agent.name:dc01 AND data.win.system.eventID:"4104"
 ```
 <img width="999" height="790" alt="Screenshot 2026-05-03 132154" src="https://github.com/user-attachments/assets/e4839431-c102-4d37-984a-620feec2f515" />
 
-🧠 Key Takeaways
+### 🧠 Key Takeaways
 PowerShell Remoting can be abused for lateral movement across Windows systems.
 WinRM connectivity can be validated with Test-WSMan.
 Invoke-Command can execute commands remotely and generate useful detection evidence.
 Event ID 4104 is highly valuable for identifying PowerShell script block activity.
 Wazuh can centralize PowerShell Operational logs for SOC-style investigations.
-🛡️ Defensive Value
+### 🛡️ Defensive Value
 
 From a defender’s perspective, this lab showed why PowerShell logging and SIEM visibility are important. Even when PowerShell Remoting is used legitimately, defenders should monitor for unusual remote execution patterns, suspicious script blocks, and activity targeting high-value systems such as domain controllers.
 
 ## ✅ Conclusion
 
 This lab demonstrated how PowerShell Remoting can be used to simulate lateral movement in an Active Directory environment and how that activity can be detected with Windows Event Logs and Wazuh. By enabling PowerShell Remoting, validating WinRM connectivity, and executing a remote command from `win10-lab` to `dc01`, I was able to generate realistic telemetry that defenders could investigate.
-
-The strongest detection evidence came from **PowerShell Event ID 4104**, which captured the script block:
-
-```powershell
-whoami; hostname; ipconfig
-```
-
 
 
