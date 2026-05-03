@@ -69,3 +69,17 @@ The most valuable detection evidence was **Event ID 4104**, which captured the r
 
 ```powershell
 whoami; hostname; ipconfig
+```
+## 📸 Evidence Walkthrough
+
+### Step 1 — PowerShell Remoting Enabled on the Target Host
+
+PowerShell Remoting was enabled on the domain controller `dc01` to allow remote PowerShell connections over WinRM. This created the necessary conditions to simulate lateral movement from the Windows 10 workstation to the domain controller.
+
+**Command Used:**
+
+```powershell
+Enable-PSRemoting -Force
+```
+<img width="1016" height="842" alt="Enable-PSRemoting" src="https://github.com/user-attachments/assets/941c7a1d-4897-4cf4-a60a-148db51df0a6" />
+
