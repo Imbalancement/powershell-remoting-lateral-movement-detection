@@ -83,3 +83,75 @@ Enable-PSRemoting -Force
 ```
 <img width="1016" height="842" alt="Enable-PSRemoting" src="https://github.com/user-attachments/assets/941c7a1d-4897-4cf4-a60a-148db51df0a6" />
 
+### Step 2 — WinRM Connectivity Verified from `win10-lab` 🌐✅
+
+After enabling PowerShell Remoting, WinRM connectivity was tested from the Windows 10 workstation to the domain controller. This confirmed that `win10-lab` could communicate with `dc01` over the Windows Remote Management service before running any remote commands.
+
+**Command Used:** 🧪
+
+```powershell
+Test-WSMan dc01
+```
+<img width="1012" height="872" alt="Test-WSMan" src="https://github.com/user-attachments/assets/cfa27729-6c8f-4d0a-9012-b848e4d92ca9" />
+
+### Step 3 — Remote Command Executed Against `dc01` ⚔️💻
+
+After confirming WinRM connectivity, a remote PowerShell command was executed from `win10-lab` against the domain controller `dc01`. This simulated lateral movement using PowerShell Remoting.
+
+**Command Used:** 🧪
+
+```powershell
+Invoke-Command -ComputerName dc01 -ScriptBlock { whoami; hostname; ipconfig }
+```
+
+<img width="1017" height="870" alt="Invoke-Command" src="https://github.com/user-attachments/assets/2d5e7949-5658-49bb-88e4-ef897d138d6b" />
+
+### Step 4 — PowerShell Event ID 4104 Captured in Event Viewer 🪵🔍
+
+After the remote command was executed, the activity was confirmed locally on `dc01` using Event Viewer. PowerShell Script Block Logging captured the remote command under **Event ID 4104**.
+
+**Log Location:** 🧭
+
+```text
+Event Viewer
+→ Applications and Services Logs
+→ Microsoft
+→ Windows
+→ PowerShell
+→ Operational
+```
+<img width="1000" height="737" alt="07-event-4104-scriptblock-dc01" src="https://github.com/user-attachments/assets/80ee1f3d-abfa-4541-bd82-192c2a8c346b" />
+
+### Step 5 — Wazuh Collected the PowerShell Detection Evidence 🛡️📊
+
+After confirming the activity locally in Event Viewer, the same PowerShell telemetry was verified inside Wazuh. This showed that the `dc01` Wazuh agent successfully forwarded PowerShell Operational logs to the SIEM for centralized threat hunting.
+
+**Wazuh Search Query:** 🔎
+
+```text
+agent.name:dc01 AND data.win.system.eventID:"4104"
+```
+<img width="999" height="790" alt="Screenshot 2026-05-03 132154" src="https://github.com/user-attachments/assets/e4839431-c102-4d37-984a-620feec2f515" />
+
+🧠 Key Takeaways
+PowerShell Remoting can be abused for lateral movement across Windows systems.
+WinRM connectivity can be validated with Test-WSMan.
+Invoke-Command can execute commands remotely and generate useful detection evidence.
+Event ID 4104 is highly valuable for identifying PowerShell script block activity.
+Wazuh can centralize PowerShell Operational logs for SOC-style investigations.
+🛡️ Defensive Value
+
+From a defender’s perspective, this lab showed why PowerShell logging and SIEM visibility are important. Even when PowerShell Remoting is used legitimately, defenders should monitor for unusual remote execution patterns, suspicious script blocks, and activity targeting high-value systems such as domain controllers.
+
+## ✅ Conclusion
+
+This lab demonstrated how PowerShell Remoting can be used to simulate lateral movement in an Active Directory environment and how that activity can be detected with Windows Event Logs and Wazuh. By enabling PowerShell Remoting, validating WinRM connectivity, and executing a remote command from `win10-lab` to `dc01`, I was able to generate realistic telemetry that defenders could investigate.
+
+The strongest detection evidence came from **PowerShell Event ID 4104**, which captured the script block:
+
+```powershell
+whoami; hostname; ipconfig
+```
+
+
+
